@@ -6,7 +6,7 @@ shape4 = [0,0;0,1;1,1;1,2];
 
 shape_set = {shape1,shape2,shape3,shape4};
 
-[gen_field, d] = generate_obstacles(128,0.1,shape_set);
+[gen_field, d] = generate_obstacles(128,0.5,shape_set);
 imshow(gen_field);
 
 function [field, actual_density] = generate_obstacles(field_size, density, shapes)
