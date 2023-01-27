@@ -1,6 +1,7 @@
+import queue
 import numpy as np
 
-class depth_first_search:
+class breadth_first_search:
 
     searched = []
     path = []
@@ -19,15 +20,15 @@ class depth_first_search:
         self.path = []
         self.path.append(start)
         goal_found = False
-        stack = []
-        stack.append(start)
+        Q = queue.Queue()
+        Q.put(start)
 
 
         while (goal_found == False):
-            if len(stack) == 0:
-                return False
             self.iterations += 1
-            current_point = stack.pop()
+            if Q.empty():
+                return False
+            current_point = Q.get()
             self.searched.append(current_point)
             if current_point == end:
                 goal_found = True
@@ -36,7 +37,7 @@ class depth_first_search:
                 if i not in self.searched:
                     #check if valid point
                     if self.check_point(i):
-                        stack.append(i)
+                        Q.put(i)
         return True
 
         
@@ -44,10 +45,9 @@ class depth_first_search:
         y = []
         #adds the four cardinal directions to the list
         y.append([point[0]+1,point[1]])
-        y.append([point[0],point[1]+1])
-        y.append([point[0]-1,point[1]])
         y.append([point[0],point[1]-1])
-        
+        y.append([point[0]-1,point[1]])
+        y.append([point[0],point[1]+1])
         return y
 
 
@@ -68,11 +68,11 @@ class depth_first_search:
 
     def check_point(self, point):
         #out of bounds
-        width = np.shape(self.field)[1]
-        height = np.shape(self.field)[0]
-        if (point[0] < 0 or point[0] >= height):
+        width = np.shape(self.field)[0]
+        height = np.shape(self.field)[1]
+        if (point[0] < 0 or point[0] >= width):
             return False
-        if (point[1] < 0 or point[1] >= width):
+        if (point[1] < 0 or point[1] >= height):
             return False
         #obstacle
         if self.field[point[0]][point[1]] == 1:

@@ -110,3 +110,9 @@ class obstacle_field:
         if np.random.rand(1) > 0.5:
             new_shape = self.rotate_piece(new_shape)
         return new_shape
+
+    def set_start_point(self, start):
+        self.field[start[0]][start[1]] = 0.2
+
+    def set_end_point(self,end):
+        self.field[end[0]][end[1]] = 0.3
