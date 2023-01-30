@@ -1,20 +1,21 @@
 import numpy as np
+import queue
+import heapq
 
-shape1 = [[1,2],[3,4],[5,6],[7,73]]
-x = np.zeros([3,3])
-print((12*np.ones([3,4]))-1)
-print(np.sum((12*np.ones([3,4]))-1))
-number_of_shapes = 3
-shape_size = 4
-print(np.ceil(shape_size*np.random.rand(number_of_shapes,1)))
+l = queue.Queue()
+l.put([1,2])
+l.put([2,3])
+l.put([3,4])
 
+x = l.get()
+print(x)
 
-shape1 = [[0,0],[0,1],[0,2],[0,3]]
-shape2 = [[0,0],[1,0],[0,1],[0,2]]
-shape3 = [[0,0],[0,1],[0,2],[1,1]]
-shape4 = [[0,0],[0,1],[1,1],[1,2]]
-rand_shapes = [1.0,2.0,3.0]
+w = [[2,3,1],[3,4,7],[5,6,8]]
+print(w[0][2])
 
-shapes = [shape1,shape2,shape3,shape4]
+x = np.zeros([8,8,2])
+x[0][0] = [1,2]
+x[1][1] = [3,4]
 
-print(shapes[rand_shapes[1]])
+n = list(x[1][1])
+print(x)
