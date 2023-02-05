@@ -28,7 +28,6 @@ class depth_first_search:
                 return False
             self.iterations += 1
             current_point = stack.pop()
-            self.searched.append(current_point)
             if current_point == end:
                 goal_found = True
             neighbors = self.get_four_neighbors(current_point)
@@ -37,6 +36,7 @@ class depth_first_search:
                     #check if valid point
                     if self.check_point(i):
                         stack.append(i)
+                        self.searched.append(i)
         return True
 
         

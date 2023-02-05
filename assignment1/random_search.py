@@ -20,6 +20,9 @@ class random_search:
 
         while (goal_found == False):
             self.iterations += 1
+            #iteration check to cancel out after a certain time
+            if self.iterations >= len(self.field)*len(self.field)*3:
+                return False
             current_point = stack.pop()
             self.searched.append(current_point)
             #start neighbor as invalid space.

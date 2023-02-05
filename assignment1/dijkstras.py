@@ -42,6 +42,8 @@ class dijkstras:
                 #tries to get a point and if empty, end the iteration
                 item = heapq.heappop(q)
                 point = item[2]
+                #adds point to searched map for visualization
+                self.searched.append(point)
                 self.iterations += 1
             except IndexError: 
                 all_searched = True
@@ -61,12 +63,10 @@ class dijkstras:
                         prev[i[0]][i[1]] = point
                         added_index += 1
                         heapq.heappush(q,(new_distance,added_index,i))
-        print(costmap)
         if costmap[end[0]][end[1]] == np.inf:
             return False
         else:
             self.path = self.get_path(start,end,prev)
-            print(self.path)
             return True
             
 
@@ -81,6 +81,7 @@ class dijkstras:
             w[0] = int(previous_map[next_point[0]][next_point[1]][0])
             w[1] = int(previous_map[next_point[0]][next_point[1]][1])
             next_point = list.copy(w)
+        self.path = path
         return path
 
         
@@ -138,5 +139,7 @@ class dijkstras:
         delta_y_sq = np.square(point2[0]-point2[0])
         return np.sqrt(delta_x_sq+delta_y_sq)
 
+    def get_path_length(self):
+        return len(self.path)
         
 

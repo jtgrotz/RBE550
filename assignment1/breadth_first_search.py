@@ -26,18 +26,22 @@ class breadth_first_search:
 
         while (goal_found == False):
             self.iterations += 1
+            #fix issue with not finding point
+            if self.iterations >= (len(self.field)*len(self.field))*2:
+                print('bad things')
             if Q.empty():
                 return False
             current_point = Q.get()
-            self.searched.append(current_point)
             if current_point == end:
                 goal_found = True
-            neighbors = self.get_four_neighbors(current_point)
-            for i in neighbors:
-                if i not in self.searched:
-                    #check if valid point
-                    if self.check_point(i):
-                        Q.put(i)
+            else:
+                neighbors = self.get_four_neighbors(current_point)
+                for i in neighbors:
+                    if i not in self.searched:
+                        #check if valid point
+                        if self.check_point(i):
+                            Q.put(i)
+                            self.searched.append(i)
         return True
 
         
@@ -60,12 +64,14 @@ class breadth_first_search:
         y.append([point[0]+1,point[1]-1])
         return y
 
+    #returns searched map for all points searched.
     def get_searched_map(self):
         blank_map = np.zeros(np.shape(self.field))
         for item in self.searched:
             blank_map[item[0]][item[1]] = self.color
         return blank_map
 
+    #checks if point is invalid
     def check_point(self, point):
         #out of bounds
         width = np.shape(self.field)[0]
@@ -79,6 +85,7 @@ class breadth_first_search:
             return False
         return True
 
+    #returns the number of iterations for data collection
     def get_iterations(self):
         return self.iterations
 
