@@ -17,6 +17,7 @@ class obstacle_field:
         #might add integer marking here if it gets weird
         self.field = np.zeros((height,width))
 
+    #generates field with given obstacle density.
     def generate_field(self, density):
         shape_size = 4
         #if no blocks need to be placed, separately initiate everything

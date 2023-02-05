@@ -12,6 +12,7 @@ class depth_first_search:
         self.field = field
         self.color = color
 
+    #starts depth first search returns boolean if goal was found.
     def search(self, start, end):
         self.iterations = 0
         self.searched = []

@@ -15,6 +15,7 @@ class dijkstras:
         self.color = color
         self.path_color = 1-color
 
+    #starts dijkstras search returns boolean if goal was found.
     def search(self, start, end):
         #init cost map of infinity an invalid distance
         costmap = np.ones(np.shape(self.field))*np.inf
@@ -140,6 +141,7 @@ class dijkstras:
         return np.sqrt(delta_x_sq+delta_y_sq)
 
     def get_path_length(self):
+        print(len(self.path))
         return len(self.path)
         
 

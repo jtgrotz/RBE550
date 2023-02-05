@@ -6,11 +6,13 @@ from breadth_first_search import breadth_first_search
 from random_search import random_search
 from dijkstras import dijkstras
 
-densities = [0,0.05,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.75] 
-#densities = [0.1,0.3,0.5]
+#different densities for testing purposes.
+#densities = [0,0.05,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.75] 
+#densities = [0.1,0.15,0.2,0.25,0.3,0.35,0.4]
+densities = [0.60]
 field_size = 128
 start_point = [0,0]
-end_point = [127,127]
+end_point = [field_size-1,field_size-1]
 dfs_iterations = np.zeros(len(densities))
 djks_iterations = np.zeros(len(densities))
 djks_path_length = np.zeros(len(densities))
@@ -37,6 +39,7 @@ for i in range(len(densities)):
     #search each method and get number of iterations only if it successfully finds the end
     if djks.search(start_point,end_point):
         djks_iterations[i] = djks.get_iterations()
+        djks_path_length[i] = djks.get_path_length()
         print(djks.get_iterations())
     if dfs.search(start_point,end_point):
         dfs_iterations[i] = dfs.get_iterations()
@@ -52,13 +55,23 @@ for i in range(len(densities)):
     else:
         rs_iterations[i] = rs.get_iterations()
 
-    #pyplot.figure(figsize=(10,10))
-    #pyplot.imshow(my_field.field)
-    #pyplot.imshow(djks.get_searched_map(), alpha=0.1)
-    #pyplot.imshow(dfs.get_searched_map(), alpha=0.1)
-    #pyplot.imshow(bfs.get_searched_map(), alpha=0.1)
-    #pyplot.imshow(rs.get_searched_map(), alpha=0.1)
-    #pyplot.show()
+    #shows each searched figure independently, not always needed.
+    pyplot.figure(figsize=(10,10))
+    pyplot.imshow(my_field.field)
+    pyplot.imshow(djks.get_searched_map(), alpha=0.4)
+    pyplot.show()
+    pyplot.figure(figsize=(10,10))
+    pyplot.imshow(my_field.field)
+    pyplot.imshow(dfs.get_searched_map(), alpha=0.2)
+    pyplot.show()
+    pyplot.figure(figsize=(10,10))
+    pyplot.imshow(my_field.field)
+    pyplot.imshow(bfs.get_searched_map(), alpha=0.2)
+    pyplot.show()
+    pyplot.figure(figsize=(10,10))
+    pyplot.imshow(my_field.field)
+    pyplot.imshow(rs.get_searched_map(), alpha=0.2)
+    pyplot.show()
 
 print('dfs')
 print(dfs_iterations)
@@ -68,13 +81,14 @@ print('djks')
 print(djks_iterations)
 print('rs')
 print(rs_iterations)
+print('path_length')
+print(djks_path_length)
 
 pyplot.figure(figsize=(10,10))
 pyplot.plot(densities,dfs_iterations, label = "DFS")
 pyplot.plot(densities,bfs_iterations, label = "BFS")
 pyplot.plot(densities,djks_iterations, label = "Dijkstras")
 pyplot.plot(densities,rs_iterations, label = "Random")
-pyplot.plot(densities,djks_path_length, label = "Dijkstras Path Length")
 pyplot.xlabel("Densities (0-1)")
 pyplot.ylabel("Number of iterations")
 pyplot.title("Search iterations vs obstacle density")
