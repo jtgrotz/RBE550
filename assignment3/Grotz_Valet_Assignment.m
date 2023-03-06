@@ -38,7 +38,7 @@ vehicle_map.CollisionChecker = coll_checker;
 %% actual path planning
 validator = validatorOccupancyMap;
 validator.Map = bin_occ_map;
-hybridPlanner = plannerHybridAStar(validator,MinTurningRadius=0.7,MotionPrimitiveLength=0.3);
+hybridPlanner = plannerHybridAStar(validator,MinTurningRadius=2,MotionPrimitiveLength=0.3);
 startPose = [3 8.5 0]; % [meters, meters, radians]
 goalPose = [4.5 1 pi];
 refpath = plan(hybridPlanner,startPose,goalPose);
