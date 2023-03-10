@@ -17,6 +17,7 @@ closed_list = string(zeros(10,1));
 open_list_index = 1;
 closed_list_index = 1;
 weights = dictionary(string([]),[]);
+start = num2str(start_point);
 goal = num2str(end_point);
 
 open_list(open_list_index,:) = [{num2str(start_point)},0];
@@ -32,33 +33,29 @@ while (isempty(open_list) == 0)
     else
         children = find_children(lv_node,kinematics,map);
         for i = 1:length(children)
+            %if(check_for_node(i, closed_list) == 0)
             current_cost = weights(lv_node).g + euclidean_distance(i, lv_node);
-            if(check_for_node(i, open_list.coordinate))
-                if current_cost < weights(i).g %might be f score instead
+            %elseif(check_for_node(i, open_list.coordinate))
+                if current_cost < weights(i).g 
                     %update neighbor cells
-                    new_s = s;
-                    new_s.previous_point = lv_node;
-                    new_s.g = current_cost;
-                    new_s.h = euclidean_distance(goal, lv_node);
-                    new_s.f =  new_s.g + new_s.h;
-                    weights(i) = new_s;
+                    %new_s = update_costs(weights,i,current_cost, euclidean_distance(goal, i));
+                     new_s = s;
+                     new_s.previous_point = lv_node;
+                     new_s.g = current_cost;
+                     new_s.h = euclidean_distance(goal, i);
+                     new_s.f =  new_s.g + new_s.h;
+                     weights(i) = new_s;
                 end
-            elseif(check_for_node(i, closed_list))
-                %do nothing
-                %maybe check weights
-            else
-               %weights(i) = update_costs(weights,i);
+            if(check_for_node(i, open_list.coordinate) == 0)
+               [open_list_index, open_list] = add_node(i, open_list);
             end
         end
         
     [closed_list_index,closed_list] = add_node(lv_node, closed_list,closed_list_index, 0);
-
     end
-
-
 end
 
-path = get_path();
+path = get_path(weights, start, goal);
 
 end
 %%
@@ -113,5 +110,6 @@ end
         d = sqrt(sum((n2-n1).^2));
     end
 
-    function path = get_path()
+    function path = get_path(dict, start, goal)
+
     end

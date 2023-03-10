@@ -17,6 +17,7 @@ closed_list = string(zeros(10,1));
 open_list_index = 1;
 closed_list_index = 1;
 weights = dictionary(string([]),[]);
+goal = num2str(end_point);
 
 open_list(open_list_index,:) = [{num2str(start_point)},0];
 open_list_index = open_list_index + 1;
@@ -24,28 +25,35 @@ open_list_index = open_list_index + 1;
 while (isempty(open_list) == 0)
     [open_list_index lv_node]  = get_least_value_node(open_list, open_list_index);
     [open_list_index, open_list] = remove_node(lv_node, open_list);
-    [closed_list_index,closed_list] = add_node(lv_node, closed_list,closed_list_index, 0);
+    %[closed_list_index,closed_list] = add_node(lv_node, closed_list,closed_list_index, 0);
 
     if (check_equal(lv_node, end_point))
         break
     else
         children = find_children(lv_node,kinematics,map);
         for i = 1:length(children)
+            %if(check_for_node(i, closed_list) == 0)
             current_cost = weights(lv_node).g + euclidean_distance(i, lv_node);
-            if(check_for_node(i, open_list.coordinate))
-                if current_cost < weights(i).g
+            %elseif(check_for_node(i, open_list.coordinate))
+                if current_cost < weights(i).g 
                     %update neighbor cells
-                    new_s = s;
-                    new_s.previous_point = lv_node;
-                    new_s.g = current_cost;
-                    new_s.h = current_cost
+                    %new_s = update_costs(weights,i,current_cost, euclidean_distance(goal, i));
+                     new_s = s;
+                     new_s.previous_point = lv_node;
+                     new_s.g = current_cost;
+                     new_s.h = euclidean_distance(goal, i);
+                     new_s.f =  new_s.g + new_s.h;
+                     weights(i) = new_s;
                 end
-            elseif(check_for_node(i, closed_list))
-                %do nothing
+            if(check_for_node(i, open_list.coordinate) == 0)
+               [open_list_index, open_list] = remove_node(lv_node, open_list);
+
             else
-               dict(i) = update_costs(weights,i);
+               %weights(i) = update_costs(weights,i);
             end
-        end 
+        end
+        
+    [closed_list_index,closed_list] = add_node(lv_node, closed_list,closed_list_index, 0);
 
     end
 
