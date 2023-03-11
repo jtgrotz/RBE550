@@ -22,7 +22,11 @@ classdef ackerman_steering_kinematics
             final_point = q(end,:);
         end
 
-        function coll = check_collision(obj,map,point)
+        %basic collision checker for defined cost map. 
+        %costmap is vehicle cost map object
+        %points is a nx3 matrix of points
+        function coll = check_collision(obj,costmap,points)
+            coll = any(checkOccupied(costmap,points));
         end
     end
 

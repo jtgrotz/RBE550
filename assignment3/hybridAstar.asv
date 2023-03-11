@@ -8,9 +8,7 @@ f = 'f'
 g = 'g'
 prev = 'previous_point'
 s_a = 'steering_angle'
-v = 'lin_vel'
-w = 'angular_input'
-s = struct(prev,'0 0',h,inf,g,inf,f,inf,s_a,0,v,1,w,0);
+s = struct(prev,'0 0',h,inf,g,inf,f,inf);
 
 coordinate = {num2str(start_point)};
 value = 0;

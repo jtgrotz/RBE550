@@ -24,9 +24,17 @@ classdef trailer_kinematics
             final_point = q(end,:);
         end
 
-        function coll = check_collision(obj,map,point)
-            %x2 = 
-            %y2 = 
+            %checks for collision along the integration path.
+            %trailer has four points, but the pose is only the first three
+            %fourth point is used to derive trailer position.
+        function coll = check_collision(obj,costmap,points)
+            %x2 =  x1-d1*cos(theta1)
+            %y2 =  y1 -d1*sin(theta1)
+            coll_car = any(checkOccupied(costmap,points));
+            trailer_points = 
+            coll_trailer = any(checkOccupied(costmap,points));
+            coll = any([coll_car,coll_trailer]);
+
         end
     end
 
