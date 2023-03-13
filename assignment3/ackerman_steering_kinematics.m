@@ -26,7 +26,14 @@ classdef ackerman_steering_kinematics
         %costmap is vehicle cost map object
         %points is a nx3 matrix of points
         function coll = check_collision(obj,costmap,points)
-            coll = any(checkOccupied(costmap,points));
+            limits = costmap.mapExtent;
+            x_oob = (any(points(:,1) >= limits(2)) || any(points(:,1) <= limits(1)));
+            y_oob = (any(points(:,2) >= limits(4)) || any(points(:,2) <= limits(3)));
+            if (x_oob || y_oob)
+                coll = 1;
+            else
+                coll = any(checkOccupied(costmap,points));
+            end
         end
     end
 
