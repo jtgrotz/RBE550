@@ -31,7 +31,7 @@ classdef differential_kinematics
             if (x_oob || y_oob)
                 coll = 1;
             else
-                coll = any(checkOccupied(costmap,points(1:2)));
+                coll = any(checkOccupied(costmap,points));
             end
             
         end

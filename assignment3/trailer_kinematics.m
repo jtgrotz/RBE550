@@ -34,12 +34,27 @@ classdef trailer_kinematics
         function coll = check_collision(obj,costmap,points)
             %x2 =  x1-d1*cos(theta1)
             %y2 =  y1 -d1*sin(theta1)
-            coll_car = any(checkOccupied(costmap,points(:,1:3)));
-            trailer_points_x = points(:,1)-obj.hitch_length*cos(points(:,4));
-            trailer_points_y = points(:,1)-obj.hitch_length*sin(points(:,4));
-            trailer_points = [trailer_points_x,trailer_points_y,points(:,4)];
-            coll_trailer = any(checkOccupied(costmap,trailer_points));
-            coll = any([coll_car,coll_trailer]);
+            limits = costmap.MapExtent;
+            x_oob = any(points(:,1) >= (limits(2)*0.98)) || any(points(:,1) <= (limits(1)*0.98));
+            y_oob = any(points(:,2) >= (limits(4)*0.98)) || any(points(:,2) <= (limits(3)*0.98));
+            if (x_oob || y_oob)
+                coll = 1;
+            else
+                coll = any(checkOccupied(costmap,points(:,1:3)));
+            end
+
+            if (coll == 0)
+                trailer_points_x = points(:,1)-obj.hitch_length*cos(points(:,4));
+                trailer_points_y = points(:,1)-obj.hitch_length*sin(points(:,4));
+                trailer_points = [trailer_points_x,trailer_points_y,points(:,4)];
+                x_oob = any(trailer_points(:,1) >= (limits(2)*0.98)) || any(trailer_points(:,1) <= (limits(1)*0.98));
+                y_oob = any(trailer_points(:,2) >= (limits(4)*0.98)) || any(trailer_points(:,2) <= (limits(3)*0.98));
+                if (x_oob || y_oob)
+                    coll = 1;
+                else 
+                    coll = any(checkOccupied(costmap,trailer_points));
+                end
+            end
 
         end
     end

@@ -6,7 +6,7 @@ classdef hybridAstar
             -1 pi/2; -1 pi/6; -1 pi/12; -1 0;
             -1 -pi/2; -1 -pi/6; -1 -pi/12; -1 0];
         modified_inputs;
-        heading_tolerance = 10; %degrees
+        heading_tolerance = 13; %degrees
         position_tolerance = 0.3;%meters
 
     end
@@ -29,6 +29,7 @@ classdef hybridAstar
         w = 'angular_input';
         s = struct(prev,'0  0  0',h,inf,g,inf,f,inf,s_a,0,v,0,w,0);
         obj.modified_inputs = obj.inputs;
+        debug_counter = 0;
         
         %coordinate = {num2str(start_point)};
         %value = 0;
@@ -57,10 +58,12 @@ classdef hybridAstar
         %visualization
         display_list = zeros(8000,2);
         d_l_index = 1;
-        vis_index = 1;
+        vis_index = 60;
         f = figure;
         
         while (isempty(open_list) == 0)
+            disp(debug_counter)
+            debug_counter = debug_counter + 1;
             %this could maybe be one function call
             [open_list_index, lv_node]  = obj.get_least_value_node(open_list, open_list_index);
             [open_list_index, open_list] = obj.remove_node(lv_node, open_list,open_list_index);
@@ -89,8 +92,8 @@ classdef hybridAstar
             else    
                  %adjust movement primatives based on proximity to the
                  %goal
-                 if (obj.euclidean_distance(lv_node,goal) <= total_e_distance *0.25)
-                     obj.modified_inputs(:,1) = obj.modified_inputs(:,1)*0.5;
+                 if (obj.euclidean_distance(lv_node,goal) <= total_e_distance *0.20)
+                     obj.modified_inputs(:,1) = obj.modified_inputs(:,1)*0.4;
                  else
                      obj.modified_inputs = obj.inputs;
                  end
@@ -108,10 +111,10 @@ classdef hybridAstar
                     else
                     %plotter
                     
-%                      cc = str2num(child);
-%                      display_list(d_l_index,:) = cc(1:2);
-%                      scatter(cc(1),cc(2), 'x');
-%                      pause(0.1);
+                      %cc = str2num(child);
+                      %display_list(d_l_index,:) = cc(1:2);
+                      %scatter(cc(1),cc(2), 'x');
+                      %pause(0.1);
 
                    
                     %current_cost = weights(lv_node).g + obj.euclidean_distance(child, lv_node);
