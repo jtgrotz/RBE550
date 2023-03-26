@@ -61,6 +61,7 @@ class depth_first_search:
         y.append([point[0]+1,point[1]-1])
         return y
 
+    #returns map with searched spaces colored in.
     def get_searched_map(self):
         blank_map = np.zeros(np.shape(self.field))
         for item in self.searched:

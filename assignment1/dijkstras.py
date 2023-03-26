@@ -71,6 +71,8 @@ class dijkstras:
             return True
             
 
+    #iterates through previous map to return the path from the start to the end
+    #returns a list that is the path
     def get_path(self, start, end, previous_map):
         path = []
         #start the path at the end point
@@ -106,6 +108,7 @@ class dijkstras:
         y.append([point[0]+1,point[1]-1])
         return y
 
+    #returns map with searched spaces colored in.
     def get_searched_map(self):
         blank_map = np.zeros(np.shape(self.field))
         for item in self.searched:

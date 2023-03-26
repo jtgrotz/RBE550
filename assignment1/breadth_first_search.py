@@ -21,15 +21,13 @@ class breadth_first_search:
         self.path = []
         self.path.append(start)
         goal_found = False
+        #use queue for next point to search
         Q = queue.Queue()
         Q.put(start)
 
 
         while (goal_found == False):
             self.iterations += 1
-            #fix issue with not finding point
-            if self.iterations >= (len(self.field)*len(self.field))*2:
-                print('bad things')
             if Q.empty():
                 return False
             current_point = Q.get()
@@ -41,6 +39,7 @@ class breadth_first_search:
                     if i not in self.searched:
                         #check if valid point
                         if self.check_point(i):
+                            #important to add point to searched here so it isn't added to the queue twice.
                             Q.put(i)
                             self.searched.append(i)
         return True

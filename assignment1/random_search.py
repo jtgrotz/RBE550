@@ -9,6 +9,7 @@ class random_search:
         self.field = field
         self.color = color
 
+    #starts random search returns boolean if goal was found.
     def search(self, start, end):
         self.iterations = 0
         self.searched = []
@@ -59,6 +60,7 @@ class random_search:
         y.append([point[0]+1,point[1]-1])
         return y
 
+    #returns map with searched spaces colored in.
     def get_searched_map(self):
         blank_map = np.zeros(np.shape(self.field))
         for item in self.searched:
