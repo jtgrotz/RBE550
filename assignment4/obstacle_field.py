@@ -1,6 +1,8 @@
 import numpy as np
+import OccGrid as OG
 import roboticstoolbox as rtb
 
+#new obstacle field is a occupancy grid and a regular array.
 class obstacle_field:
 
     shape1 = [[0,0],[0,1],[0,2],[0,3]]
@@ -13,10 +15,11 @@ class obstacle_field:
 
     ocgrid = []
 
-    def __init__(self, height, width):
+    def __init__(self, height, width, pixel_res):
         self.height = height
         self.width = width
         self.shape_size = 4
+        self.pixel_res = pixel_res
         #might add integer marking here if it gets weird
         self.field = np.zeros((height,width))
 
@@ -60,9 +63,9 @@ class obstacle_field:
                 else :
                     point_coords = [np.ceil(self.width*np.random.rand(1))-1,np.ceil(self.height*np.random.rand(1))-1]
         actual_density = (np.sum(self.field))/(self.height*self.width)
-        self.ocgrid = rtb.OccupancyGrid(self.field)
+        #creates occupancy grid of the proper resolution.
+        self.ocgrid = OG.OccupancyGrid(self.field, cellsize=5)
         return actual_density
-
 
     
     #inverts piece
@@ -131,3 +134,35 @@ class obstacle_field:
     #ensures the set end point is not in an obstacle
     def set_end_point(self,end):
         self.field[end[0]][end[1]] = 0.3
+
+
+    def grid_to_coord(self, grid_point):
+        return self.ocgrid.g2w(grid_point)
+
+    def coord_to_grid(self, world_point):
+        return self.ocgrid.w2g(world_point)
+
+    #negative 1 is extinguished
+    def extinguish_fire(self, world_point):
+        p = self.coord_to_grid(world_point)
+        self.ocgrid.grid[p[0],p[1]] = -1
+
+    #10 or greater is onfire
+    def start_fire(self,grid_point):
+        self.ocgrid.grid[grid_point[0],grid_point[1]] = 10
+
+    def increment_fire(self):
+        sz = self.ocgrid.grid.shape
+        for y in range(sz[0]):
+            for x in range(sz[1]):
+                if self.ocgrid.grid[y,x]
+                #todo function for checking occupancy, function for setting occupancy in OCCgrid.
+
+
+    #increments fire timer and spreads fires if needed.
+    def spread_fire(self,radius):
+        return 0
+
+    def check_state(self, grid_point):
+        return self.ocgrid.grid[grid_point[0],grid_point[1]]
+
