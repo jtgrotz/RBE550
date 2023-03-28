@@ -22,6 +22,7 @@ class obstacle_field:
         self.pixel_res = pixel_res
         #might add integer marking here if it gets weird
         self.field = np.zeros((height,width))
+        self.obstacles = {}
 
     #generates field with given obstacle density.
     def generate_field(self, density):
@@ -98,6 +99,7 @@ class obstacle_field:
             x_location = int(piece[i][0]+point[0])
             y_location = int(piece[i][1]+point[1])
             self.field[x_location][y_location] = 1
+            self.obstacles({(x_location,y_location) : 1})
         
     #checks if spaces for the piece have already been filled.
     def already_filled(self, point, piece):
@@ -145,24 +147,52 @@ class obstacle_field:
     #negative 1 is extinguished
     def extinguish_fire(self, world_point):
         p = self.coord_to_grid(world_point)
-        self.ocgrid.grid[p[0],p[1]] = -1
+        self.ocgrid.grid[p[0],p[1]] = 1
+        self.obstacles.update({(p[0],p[1]) : -1})
 
     #10 or greater is onfire
     def start_fire(self,grid_point):
         self.ocgrid.grid[grid_point[0],grid_point[1]] = 10
+        self.obstacles.update({(grid_point[0],grid_point[1]) : 2})
 
+    # 1: regular obstacle, -1 extinguished, 2 burning, 3 burned.
     def increment_fire(self):
         sz = self.ocgrid.grid.shape
         for y in range(sz[0]):
             for x in range(sz[1]):
-                if self.ocgrid.grid[y,x]
-                #todo function for checking occupancy, function for setting occupancy in OCCgrid.
+                # if burning for 20 seconds, set to burned state
+                if self.ocgrid.grid[y,x] >= 30:
+                    self.obstacles.update({(y,x) : 3})
+                #else if buring for 10 seconds, spread fire and increment time 
+                elif self.ocgrid.grid[y,x] >= 20:
+                    self.ocgrid.grid[y,x] += 1
+                    self.spread_fire(x,y,30)
+                # else increment time burning
+                elif self.ocgrid.grid[y,x] >= 10:
+                    self.ocgrid.grid[y,x] += 1
+    #todo function for checking occupancy, function for setting occupancy in OCCgrid.
 
 
     #increments fire timer and spreads fires if needed.
-    def spread_fire(self,radius):
-        return 0
+    def spread_fire(self,px,py,radius):
+        #get keys for the dictionary. 
+        obs = list(self.obstacles)
+        #check the location of each key in regards to the given point
+        for ob in obs:
+            #if within radius
+            if self.euclidean_distance(px,py,ob[0],ob[1]) <= radius:
+                if self.obstacles[ob] <= 1: #if not already buring
+                    #set on fire (value to 10 and set dictionary.
+                    self.obstacles[ob] = 2
+                    self.ocgrid.grid[ob[0],ob[1]] = 10
 
     def check_state(self, grid_point):
-        return self.ocgrid.grid[grid_point[0],grid_point[1]]
+        return self.obstacles[(grid_point[0],grid_point[1])]
+
+    def euclidean_distance(self,x1,y1,x2,y2):
+        return np.sqrt(np.square(x2-x1)+np.square(y2-y1))
+
+    #returns all obstacles within a given radius
+    def obstacle_list():
+        return 0
 

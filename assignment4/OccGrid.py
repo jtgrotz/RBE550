@@ -228,8 +228,8 @@ class BaseOccupancyGrid(BaseMap):
         :param value: value to set cells to
         :type value: int, bool, float
         """
-        bl = self.w2g([region[0], region[2]])
-        tr = self.w2g([region[1], region[3]])
+        bl = self.w2g([region[0], region[1]])
+        tr = self.w2g([region[2], region[3]])
         self.grid[bl[1] : tr[1] + 1, bl[0] : tr[0] + 1] = value
 
     def g2w(self, p):
