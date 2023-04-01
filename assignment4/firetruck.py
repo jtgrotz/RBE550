@@ -1,4 +1,5 @@
-import roboticstoolbox
+import robotics_toolbox_edit
+from robotics_toolbox_edit.PRMPlanner import PRMPlanner
 
 #fire truck captain ahab
 class fire_truck:
@@ -11,7 +12,7 @@ class fire_truck:
 
     def __init__(self, start_point,map):
         self.current_location = start_point
-        self.planner = pr,(map, 0.7)
+        self.planner = PRMPlanner(map, 0.7)
 
     def find_next_goal():
         return 0

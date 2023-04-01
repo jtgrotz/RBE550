@@ -1,5 +1,5 @@
 import numpy as np
-import OccGrid as OG
+import robotics_toolbox_edit.OccGrid as OG
 import roboticstoolbox as rtb
 
 #new obstacle field is a occupancy grid and a regular array.
@@ -13,7 +13,8 @@ class obstacle_field:
 
     shapes = [shape1,shape2,shape3,shape4]
 
-    ocgrid = []
+    ocgrid = None
+    binocgrid = None
 
     def __init__(self, height, width, pixel_res):
         self.height = height
@@ -23,6 +24,7 @@ class obstacle_field:
         #might add integer marking here if it gets weird
         self.field = np.zeros((height,width))
         self.obstacles = {}
+        self.putting_out_fires = {}
 
     #generates field with given obstacle density.
     def generate_field(self, density):
@@ -66,6 +68,7 @@ class obstacle_field:
         actual_density = (np.sum(self.field))/(self.height*self.width)
         #creates occupancy grid of the proper resolution.
         self.ocgrid = OG.OccupancyGrid(self.field, cellsize=5)
+        self.binocgrid = OG.BinaryOccupancyGrid(self.field, cellsize=5)
         return actual_density
 
     
@@ -193,6 +196,27 @@ class obstacle_field:
         return np.sqrt(np.square(x2-x1)+np.square(y2-y1))
 
     #returns all obstacles within a given radius
-    def obstacle_list():
-        return 0
+    def obstacle_in_range_list(self, px,py,radius):
+        obs = list(self.obstacles)
+        obs_in_range = []
+        for ob in obs:
+            if self.euclidean_distance(px,py,ob[0],ob[1]) <= radius:
+                obs_in_range.append(ob)
+
+    def extinguish_fire_counter(self, obstacles):
+        for ob in obstacles:
+            curr_val = self.putting_out_fires.get(ob)
+            if curr_val == None:
+                self.putting_out_fires.update({ob : 5})
+            elif curr_val <= 1:
+                self.extinguish_fire(ob)
+                self.putting_out_fires.pop(ob)
+            else :
+                self.putting_out_fires.update({ob : curr_val-1})
+
+
+
+
+#TODO
+#return all obstacles for goal setting
 
