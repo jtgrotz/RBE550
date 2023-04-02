@@ -143,7 +143,8 @@ class BaseOccupancyGrid(BaseMap):
         :return: maximum world x-coordinate
         :rtype: float
         """
-        return (self._grid.shape[1] - 1) * self._cellsize + self._origin[0]
+        #return (self._grid.shape[1] - 1) * self._cellsize + self._origin[0]
+        return (self._grid.shape[1]) * self._cellsize + self._origin[0]
 
     @property
     def ymin(self):
@@ -163,7 +164,9 @@ class BaseOccupancyGrid(BaseMap):
         :return: maximum world y-coordinate
         :rtype: float
         """
-        return (self._grid.shape[0] - 1) * self._cellsize + self._origin[1]
+        #return (self._grid.shape[0] - 1) * self._cellsize + self._origin[1]
+        return (self._grid.shape[0]) * self._cellsize + self._origin[1]
+
 
     @property
     def shape(self):
@@ -261,6 +264,7 @@ class BaseOccupancyGrid(BaseMap):
         value. No check is made on the validity of the coordinate.
         """
         return (np.floor((p - self._origin) / self._cellsize)).astype(int)
+        #return (np.round((p - self._origin) / self._cellsize)).astype(int)
 
     def plot(self, map=None, ax=None, block=False, **kwargs):
         """
@@ -290,6 +294,7 @@ class BaseOccupancyGrid(BaseMap):
             kwargs["extent"] = self.workspace
 
         ax.imshow(map, origin="lower", interpolation=None, **kwargs)
+        #ax.imshow(map, interpolation=None, **kwargs)
         ax.set_xlabel("x")
         ax.set_ylabel("y")
         plt.show(block=block)

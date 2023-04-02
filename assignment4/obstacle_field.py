@@ -9,6 +9,10 @@ class obstacle_field:
     shape2 = [[0,0],[1,0],[0,1],[0,2]]
     shape3 = [[0,0],[0,1],[0,2],[1,1]]
     shape4 = [[0,0],[0,1],[1,1],[1,2]]
+    onfire_color = 20
+    burned_color = 100
+    normal_color = 10
+    burning_time = 10
 
 
     shapes = [shape1,shape2,shape3,shape4]
@@ -21,10 +25,11 @@ class obstacle_field:
         self.width = width
         self.shape_size = 4
         self.pixel_res = pixel_res
-        #might add integer marking here if it gets weird
         self.field = np.zeros((height,width))
         self.obstacles = {}
         self.putting_out_fires = {}
+        #self.on_fire = []
+        #self.not_onfire = []
 
     #generates field with given obstacle density.
     def generate_field(self, density):
@@ -67,8 +72,8 @@ class obstacle_field:
                     point_coords = [np.ceil(self.width*np.random.rand(1))-1,np.ceil(self.height*np.random.rand(1))-1]
         actual_density = (np.sum(self.field))/(self.height*self.width)
         #creates occupancy grid of the proper resolution.
-        self.ocgrid = OG.OccupancyGrid(self.field, cellsize=5)
-        self.binocgrid = OG.BinaryOccupancyGrid(self.field, cellsize=5)
+        self.ocgrid = OG.OccupancyGrid(self.field, cellsize=self.pixel_res)
+        self.binocgrid = OG.BinaryOccupancyGrid(self.field, cellsize=self.pixel_res)
         return actual_density
 
     
@@ -101,8 +106,9 @@ class obstacle_field:
         for i in range(self.shape_size):
             x_location = int(piece[i][0]+point[0])
             y_location = int(piece[i][1]+point[1])
-            self.field[x_location][y_location] = 1
-            self.obstacles({(x_location,y_location) : 1})
+            self.field[x_location][y_location] = self.normal_color
+            self.obstacles.update({(x_location,y_location) : 1})
+            #self.not_onfire.append(point)
         
     #checks if spaces for the piece have already been filled.
     def already_filled(self, point, piece):
@@ -148,9 +154,10 @@ class obstacle_field:
         return self.ocgrid.w2g(world_point)
 
     #negative 1 is extinguished
-    def extinguish_fire(self, world_point):
-        p = self.coord_to_grid(world_point)
-        self.ocgrid.grid[p[0],p[1]] = 1
+    def extinguish_fire(self, grid_point):
+        p = grid_point
+        #p = self.coord_to_grid(world_point)
+        self.ocgrid.grid[p[0],p[1]] = self.normal_color
         self.obstacles.update({(p[0],p[1]) : -1})
 
     #10 or greater is onfire
@@ -160,19 +167,19 @@ class obstacle_field:
 
     # 1: regular obstacle, -1 extinguished, 2 burning, 3 burned.
     def increment_fire(self):
-        sz = self.ocgrid.grid.shape
-        for y in range(sz[0]):
-            for x in range(sz[1]):
-                # if burning for 20 seconds, set to burned state
-                if self.ocgrid.grid[y,x] >= 30:
-                    self.obstacles.update({(y,x) : 3})
-                #else if buring for 10 seconds, spread fire and increment time 
-                elif self.ocgrid.grid[y,x] >= 20:
-                    self.ocgrid.grid[y,x] += 1
-                    self.spread_fire(x,y,30)
-                # else increment time burning
-                elif self.ocgrid.grid[y,x] >= 10:
-                    self.ocgrid.grid[y,x] += 1
+        #fix to be better
+        obs = self.obstacles.keys()
+        for ob in obs:
+            # if burning for defined seconds, set to burned state
+            if self.ocgrid.grid[ob[0],ob[1]] >= self.burned_color:
+                self.obstacles.update({(ob[0],ob[1]) : 3})
+            #else if buring for 10 seconds, spread fire and increment time 
+            elif self.ocgrid.grid[ob[0],ob[1]] >= self.onfire_color+self.burning_time:
+                self.ocgrid.grid[ob[0],ob[1]] += 1
+                self.spread_fire(ob[0],ob[1],30)
+            # else increment time burning
+            elif self.ocgrid.grid[ob[0],ob[1]] >= self.onfire_color:
+                self.ocgrid.grid[ob[0],ob[1]] += 1
     #todo function for checking occupancy, function for setting occupancy in OCCgrid.
 
 
@@ -183,14 +190,30 @@ class obstacle_field:
         #check the location of each key in regards to the given point
         for ob in obs:
             #if within radius
-            if self.euclidean_distance(px,py,ob[0],ob[1]) <= radius:
+            if self.euclidean_distance(px,py,ob[0],ob[1]) <= radius/self.pixel_res:
                 if self.obstacles[ob] <= 1: #if not already buring
                     #set on fire (value to 10 and set dictionary.
                     self.obstacles[ob] = 2
-                    self.ocgrid.grid[ob[0],ob[1]] = 10
+                    self.ocgrid.grid[ob[0],ob[1]] = self.onfire_color
 
+    #returns state of cell from dictionary
     def check_state(self, grid_point):
         return self.obstacles[(grid_point[0],grid_point[1])]
+    
+    #returns state of cell in grid index 
+    def check_cell(self, grid_point):
+        #hard check because oob check isn't working
+        if grid_point[0] > self.width-1:
+            grid_point[0] = 49
+        if grid_point[1] > self.height-1:
+            grid_point[1] = 49
+
+        return self.field[grid_point[0]][grid_point[1]]
+    
+    #returns state of cell in world coordinates
+    def check_world_points(self, world_point):
+        p = self.coord_to_grid(world_point)
+        return self.check_cell(p)
 
     def euclidean_distance(self,x1,y1,x2,y2):
         return np.sqrt(np.square(x2-x1)+np.square(y2-y1))
@@ -200,9 +223,11 @@ class obstacle_field:
         obs = list(self.obstacles)
         obs_in_range = []
         for ob in obs:
-            if self.euclidean_distance(px,py,ob[0],ob[1]) <= radius:
+            if self.euclidean_distance(px,py,ob[0],ob[1]) <= radius/self.pixel_res:
                 obs_in_range.append(ob)
+        return obs_in_range
 
+    #helper function that decrements the fire counter to extinguishing fires
     def extinguish_fire_counter(self, obstacles):
         for ob in obstacles:
             curr_val = self.putting_out_fires.get(ob)
@@ -214,9 +239,31 @@ class obstacle_field:
             else :
                 self.putting_out_fires.update({ob : curr_val-1})
 
+    #simulator function call that handles fire extinguishing over time. 
+    def extinguish_fires(self,px,py,radius):
+        obs = self.obstacle_in_range_list(px,py,radius)
+        self.extinguish_fire_counter(obs)
 
+    #returns a list of buring obstacles
+    def return_burning_obstacles(self):
+        obs_keys = self.obstacles.keys()
+        burning_obs = []
+        for k in obs_keys:
+            if self.obstacles.get(k) == 2:
+                burning_obs.append(k)
+        return burning_obs
+        
+    #returns a list of non_burning obstacles
+    def return_non_burning_obstacles(self):
+        obs_keys = self.obstacles.keys()
+        nonburning_obs = []
+        for k in obs_keys:
+            if self.obstacles.get(k) <= 1:
+                nonburning_obs.append(k)
+        return nonburning_obs
+    
+    #returns a list of all obstacles
+    def return_obstacles(self):
+        return self.obstacles.keys()
 
-
-#TODO
-#return all obstacles for goal setting
 

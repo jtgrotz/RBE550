@@ -69,7 +69,7 @@ class PRMPlanner(PlannerBase):
 
         self._npoints = npoints
         # self._npoints0 = npoints
-        self._dist_thresh0 = dist_thresh
+        self._dist_thresh = dist_thresh
         self._graph = None
         self._v_goal = None
         self._v_start = None

@@ -7,7 +7,8 @@ class a_star:
     interations = 0
     
     def __init__(self,field,color):
-        self.field = field
+        self.map = field
+        self.field = self.map.field
         self.color = color
 
     def search(self,start,end):
@@ -81,7 +82,7 @@ class a_star:
             w[0] = int(previous_map[next_point[0]][next_point[1]][0])
             w[1] = int(previous_map[next_point[0]][next_point[1]][1])
             next_point = list.copy(w)
-        self.path = path
+        path.reverse()
         return path
 
         
@@ -123,7 +124,7 @@ class a_star:
         if (point[1] < 0 or point[1] >= width):
             return False
         #obstacle
-        if self.field[point[0]][point[1]] == 1:
+        if self.field[point[0]][point[1]] >= 1:
             return False
         return True
 
