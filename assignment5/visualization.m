@@ -22,7 +22,7 @@ conf(1).JointPosition = 0.42/2+0.05;
 conf(2).JointPosition = 0.460;
 conf(3).JointPosition = 0.660-0.076-0.384-0.04;
 conf(4).JointPosition = 0;
-conf(5).JointPosition = 0;
-conf(6).JointPosition = 0;
+%conf(5).JointPosition = 0;
+%conf(6).JointPosition = 0;
 
 show(t,conf,"Parent",ax);

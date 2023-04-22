@@ -73,8 +73,8 @@ function transmission = transmission()
     addBody(transmission,body2,'body1')
     addBody(transmission,body3,'body2')
     addBody(transmission,body4,'body3')
-    addBody(transmission,body5,'body4')
-    addBody(transmission,body6,'body5')
+    %addBody(transmission,body5,'body4')
+    %addBody(transmission,body6,'body5')
 
        %add collision for the actual transmission.
     mainshaft = rigidBody('body7');
