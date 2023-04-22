@@ -1,22 +1,22 @@
-clear all
+% clear all
+% 
+% [c,s] = get_obstacles();
+% figHandle = figure;
+%     ax = gca;
+%     hold all;
+% for i = 3:length(c)
+%     show(c(i), "Parent", ax);
+% end
+% 
+% for i = 1:length(s)
+%     show(s(i), "Parent", ax);
+% end
+% axis equal;
+% xlabel('x')
+% ylabel('y')
+% zlabel('z')
 
-[c,s] = get_obstacles();
-figHandle = figure;
-    ax = gca;
-    hold all;
-for i = 3:length(c)
-    show(c(i), "Parent", ax);
-end
-
-for i = 1:length(s)
-    show(s(i), "Parent", ax);
-end
-axis equal;
-xlabel('x')
-ylabel('y')
-zlabel('z')
-
-function [casing,bottom_shaft] = get_obstacles() 
+function [casing,bottom_shaft] = obstacles() 
     casing = add_casing();
     bottom_shaft = add_bottom_shaft();
 end
@@ -31,7 +31,7 @@ function casing = add_casing()
     %dimensions for side panel approximation
     s_b_dim = [th,0.4,0.42];
     s_t_dim = [th,0.17,0.42];
-    s_lr_dim = [th,0.08,0.13];
+    s_lr_dim = [th,0.16,0.13];
 
     %positions for the front and back panels
     %fcd_pose = [0.25,-(0.48-fcd(2)/2),0.42];

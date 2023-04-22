@@ -9,9 +9,9 @@ function transmission = transmission()
         %a alpha d theta
        dh = [0 -pi/2 0 0;
          0 -pi/2 0 -pi/2;
-        0 0 0 pi;
+        0 0 0 -pi;
          0 -pi/2 0 0;
-        0 pi/2 0 +pi/2;
+        0 -pi/2 0 -pi/2;
         0 0 0 0];
 
     %dimensions for different primatives of the transmission
@@ -44,17 +44,17 @@ function transmission = transmission()
     % jnt6 = rigidBodyJoint('z_trans','prismatic');
 
      body1 = rigidBody('body1');
-    jnt1 = rigidBodyJoint('z_trans','prismatic');
+    jnt1 = rigidBodyJoint('z_rot','revolute');
     body2 = rigidBody('body2');
-    jnt2 = rigidBodyJoint('y_trans','prismatic');
+    jnt2 = rigidBodyJoint('y_rot','revolute');
     body3 = rigidBody('body3');
-    jnt3 = rigidBodyJoint('x_trans','prismatic');
+    jnt3 = rigidBodyJoint('x_rot','revolute');
     body4 = rigidBody('body4');
-    jnt4 = rigidBodyJoint('x_rot','revolute');
+    jnt4 = rigidBodyJoint('x_trans','prismatic');
     body5 = rigidBody('body5');
-    jnt5 = rigidBodyJoint('y_rot','revolute');
+    jnt5 = rigidBodyJoint('y_trans','prismatic');
     body6 = rigidBody('body6');
-    jnt6 = rigidBodyJoint('z_rot','revolute');
+    jnt6 = rigidBodyJoint('z_trans','prismatic');
 
     setFixedTransform(jnt1,dh(1,:),'dh');
     setFixedTransform(jnt2,dh(2,:),'dh');
@@ -82,7 +82,7 @@ function transmission = transmission()
     setFixedTransform(mainshaft_jnt,[0,0,0,0],"dh");
     mainshaft.Joint = mainshaft_jnt;
     addCollision(mainshaft,"cylinder",[0.072/2,0.660],tf);
-   % addVisual(mainshaft,"cylinder",[0.072/2,0.660],tf);
+    addVisual(mainshaft,"cylinder",[0.072/2,0.660],tf);
 
     tf(3,4) = p1;
     sub_one = rigidBody('body8');
@@ -90,7 +90,7 @@ function transmission = transmission()
     setFixedTransform(mainshaft_jnt,[a1,0,a1,0],"dh");
     sub_one.Joint = sub_one_jnt;
     addCollision(sub_one,"cylinder",[0.212/2,0.150],tf);
-    %addVisual(sub_one,"cylinder",[0.212/2,0.150],tf);
+    addVisual(sub_one,"cylinder",[0.212/2,0.150],tf);
 
     tf(3,4) = p2;
     sub_two = rigidBody('body9');
@@ -98,11 +98,11 @@ function transmission = transmission()
     setFixedTransform(mainshaft_jnt,[a2,0,a2,0],"dh");
     sub_two.Joint = sub_two_jnt;
     addCollision(sub_two,"cylinder",[0.260/2,0.234],tf);
-   % addVisual(sub_two,"cylinder",[0.260/2,0.234],tf);
+    addVisual(sub_two,"cylinder",[0.260/2,0.234],tf);
 
-   % addBody(transmission,mainshaft,'body6');
-   % addBody(transmission,sub_one,'body7');
-    %addBody(transmission,sub_two,'body8');
+    addBody(transmission,mainshaft,'body6');
+    addBody(transmission,sub_one,'body7');
+    addBody(transmission,sub_two,'body8');
 
     %transmission.Bodies
 
