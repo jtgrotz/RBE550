@@ -1,5 +1,5 @@
 function transmission = transmission()
-    %dh for 6dof
+    %dh for 6dof on distance between points
      dh = [0 -pi/2 0 0;
          0 -pi/2 0 -pi/2;
         0 0 0 0;
@@ -7,12 +7,16 @@ function transmission = transmission()
         0 pi/2 0 pi/2;
         0 0 0 0];
 
+    %dimensions for different primatives of the transmission
     main_length = 0.660;
     a1 = 0.150;
     p1 = 0.04+a1/2;
     a2 = 0.300;
     p2 = p1+0.3/2;
+
+    %create body
     transmission = rigidBodyTree;
+    %tf matrix for the different collisions at the end of the movement
     tf = [1,0,0,0
         0,1,0,0;
         0,0,1,main_length/2;
@@ -52,6 +56,7 @@ function transmission = transmission()
     addBody(transmission,body5,'body4')
     addBody(transmission,body6,'body5')
 
+       %add collision for the actual transmission.
     mainshaft = rigidBody('body7');
     mainshaft_jnt = rigidBodyJoint('jnt7','fixed');
     setFixedTransform(mainshaft_jnt,[0,0,0,0],"dh");
@@ -76,7 +81,7 @@ function transmission = transmission()
     addBody(transmission,sub_one,'body7');
     addBody(transmission,sub_two,'body8');
 
-    transmission.Bodies
+    %transmission.Bodies
 
 end
 

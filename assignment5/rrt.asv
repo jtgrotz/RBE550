@@ -19,13 +19,10 @@ function [final_path,outputArg2] = rrt(robot,world,min_states,max_states,iterati
                 continue
             else
                 list_of_points(k) = rand_config;
-                %add graph node
-                graph.addnode()
-                %add graph edge
-                graph.addedge()
-                break;
+                
             end
         end
+
     end
 end
 
@@ -52,7 +49,6 @@ end
 % finds the n nearest points, given the list of points
 function [indexs, nearest_points] = find_nearest_points(point_list,new_point,number_of_points)
     %might also add a range search here
-    %add sort here for closest first maybe
     mdl = KDTreeSearcher(point_list);
     Idxs = knnsearch(mdl,new_point,'Distance','euclidean','K',number_of_points);
     nearest_points = point_list(Idxs);

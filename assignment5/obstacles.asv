@@ -4,12 +4,13 @@ clear all
 figHandle = figure;
     ax = gca;
     hold all;
-for i = 3:length(c)
-    show(c(i), "Parent", ax);
+for i = 1:length(c)
+    show(obs(i), "Parent", ax);
 end
 
 for i = 1:length(s)
-    show(s(i), "Parent", ax);
+        show(obs(i), "Parent", ax);
+
 end
 axis equal;
 xlabel('x')
