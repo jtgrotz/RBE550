@@ -3,7 +3,7 @@ function [final_path,outputArg2] = rrt(robot,world,goal_state,min_states,max_sta
     %   Detailed explanation goes here
     %init lists
     number_of_nearest = 3;
-    list_of_points = inf(iterations,length(min_states));
+    list_of_points = zeros(iterations,length(min_states));
     G = graph();
     %put starting point into the list
     list_of_points(1,:) = robot.get_initial_config_row();
@@ -20,15 +20,15 @@ function [final_path,outputArg2] = rrt(robot,world,goal_state,min_states,max_sta
         %search for nearest neighbors
         [idxs, near_neighbors] = find_nearest_points(list_of_points, rand_config, number_of_nearest);
         for i = 1:length(idxs)
-            if (check_path_validity(robot,world,rand_config,list_of_points(idxs(i),:)) == false)
+            if (check_path_validity(robot,world,rand_config,list_of_points(idx(i))) == false)
                 continue
             else
-                list_of_points(k,:) = rand_config;
+                list_of_points(k) = rand_config;
                 %add graph node
-                G = G.addnode(idxs(i));
+                graph.addnode(idxs(i));
                 %add graph edge between current neighbor index, and new
                 %point index
-                G = G.addedge(idxs(i),k);
+                graph.addedge(idxs(i),k);
                 break;
             end
         end
@@ -41,14 +41,13 @@ end
 
 %generates a random configuration between the given limits. 
 function p = gen_point(min_states, max_states)
-    if isrow(min_states)
+    if iscolumn(min_states)
         min_states = min_states';
     end
-    if isrow(max_states)
+    if is(max_states)
         max_states = max_states';
     end
     p = min_states + (max_states-min_states).*rand(length(min_states),1);
-    p = p';
 end
 
 %checks to see if the given configuration does not run into any obstacles.

@@ -86,7 +86,7 @@ function casing = add_casing()
     side1_casing = [side1_top,side1_bottom,side1_left,side1_right];
     side2_casing = [side2_top,side2_bottom,side2_left,side2_right];
 
-    casing = [front_casing,back_casing,side1_casing,side2_casing];
+    casing = {front_casing,back_casing,side1_top,side1_bottom,side1_left,side1_right,side2_top,side2_bottom,side2_left,side2_right};
 
 end
 
@@ -114,7 +114,7 @@ function gear_shaft = add_bottom_shaft()
     gears2.Pose = se3(angles,axis,"XYZ",[shaft_length-0.318, y_pos, z_pos]);
     gears3.Pose = se3(angles,axis,"XYZ",[shaft_length-0.402/2, y_pos, z_pos]);
 
-    gear_shaft = [shaft, gear1, gears2, gears3];
+    gear_shaft = {shaft, gear1, gears2, gears3};
 
 end
 %todo better side representation
